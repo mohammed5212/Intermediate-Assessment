@@ -11,9 +11,9 @@ const StudentList = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Fetch data on mount
+  // Fetch from API or json-server
   useEffect(() => {
-    axios.get('https://jsonplaceholder.typicode.com/users')
+    axios.get('http://localhost:5000/students') // or your API URL
       .then(res => {
         dispatch(setStudents(res.data));
         setLoading(false);
@@ -26,8 +26,7 @@ const StudentList = () => {
   }, [dispatch]);
 
   const handleDelete = (id) => {
-    const confirmDelete = confirm('Are you sure you want to delete this student?');
-    if (confirmDelete) {
+    if (confirm('Are you sure you want to delete this student?')) {
       dispatch(deleteStudent(id));
     }
   };
@@ -38,19 +37,29 @@ const StudentList = () => {
   return (
     <div style={{ padding: '1rem' }}>
       <h2>Student List</h2>
-      <button onClick={() => navigate('/add')}>➕ Add Student</button>
-      <ul>
-        {students.map(student => (
-          <li key={student.id} style={{ margin: '1rem 0', borderBottom: '1px solid #ccc' }}>
-            <strong>{student.name}</strong> — {student.email}
-            <div style={{ marginTop: '0.5rem' }}>
-              <button onClick={() => navigate(`/student/${student.id}`)}>👁 View</button>
-              <button onClick={() => navigate(`/edit/${student.id}`)}>✏️ Edit</button>
-              <button onClick={() => handleDelete(student.id)}>🗑 Delete</button>
-            </div>
-          </li>
-        ))}
-      </ul>
+
+      <p>Total Students: <strong>{students.length}</strong></p> {/* ✅ Total Count */}
+
+      <button onClick={() => navigate('/add')} style={{ marginBottom: '1rem' }}>
+        ➕ Add Student
+      </button>
+
+      {students.length === 0 ? (
+        <p>No students found.</p>
+      ) : (
+        <ul>
+          {students.map(student => (
+            <li key={student.id} style={{ marginBottom: '1rem', borderBottom: '1px solid #ccc', paddingBottom: '0.5rem' }}>
+              <strong>{student.name}</strong> — {student.email}
+              <div style={{ marginTop: '0.5rem' }}>
+                <button onClick={() => navigate(`/student/${student.id}`)}>👁 View</button>{' '}
+                <button onClick={() => navigate(`/edit/${student.id}`)}>✏️ Edit</button>{' '}
+                <button onClick={() => handleDelete(student.id)}>🗑 Delete</button>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 };
