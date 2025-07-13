@@ -1,0 +1,124 @@
+{
+  "students": [
+    {
+      "id": 1,
+      "name": "Rahul Sharma",
+      "email": "rahul.sharma@example.com",
+      "phone": "9876543210"
+    },
+    {
+      "id": 2,
+      "name": "Priya Mehta",
+      "email": "priya.mehta@example.com",
+      "phone": "9123456780"
+    },
+    {
+      "id": 3,
+      "name": "Amit Verma",
+      "email": "amit.verma@example.com",
+      "phone": "9867342190"
+    },
+    {
+      "id": 4,
+      "name": "Sneha Kapoor",
+      "email": "sneha.kapoor@example.com",
+      "phone": "9845123409"
+    },
+    {
+      "id": 5,
+      "name": "Karan Patel",
+      "email": "karan.patel@example.com",
+      "phone": "9812345678"
+    },
+    {
+      "id": 6,
+      "name": "Anjali Singh",
+      "email": "anjali.singh@example.com",
+      "phone": "9898989898"
+    },
+    {
+      "id": 7,
+      "name": "Ravi Joshi",
+      "email": "ravi.joshi@example.com",
+      "phone": "9789456123"
+    },
+    {
+      "id": 8,
+      "name": "Meera Nair",
+      "email": "meera.nair@example.com",
+      "phone": "9823456789"
+    },
+    {
+      "id": 9,
+      "name": "Nikhil Deshmukh",
+      "email": "nikhil.deshmukh@example.com",
+      "phone": "9765432109"
+    },
+    {
+      "id": 10,
+      "name": "Pooja Iyer",
+      "email": "pooja.iyer@example.com",
+      "phone": "9887766554"
+    },
+    {
+      "id": 11,
+      "name": "Arjun Reddy",
+      "email": "arjun.reddy@example.com",
+      "phone": "9753124680"
+    },
+    {
+      "id": 12,
+      "name": "Tanvi Shah",
+      "email": "tanvi.shah@example.com",
+      "phone": "9811223344"
+    },
+    {
+      "id": 13,
+      "name": "Manoj Kumar",
+      "email": "manoj.kumar@example.com",
+      "phone": "9798797979"
+    },
+    {
+      "id": 14,
+      "name": "Divya Agarwal",
+      "email": "divya.agarwal@example.com",
+      "phone": "9723451230"
+    },
+    {
+      "id": 15,
+      "name": "Siddharth Rao",
+      "email": "siddharth.rao@example.com",
+      "phone": "9678901234"
+    },
+    {
+      "id": 16,
+      "name": "Neha Dubey",
+      "email": "neha.dubey@example.com",
+      "phone": "9845098450"
+    },
+    {
+      "id": 17,
+      "name": "Raj Malhotra",
+      "email": "raj.malhotra@example.com",
+      "phone": "9856012345"
+    },
+    {
+      "id": 18,
+      "name": "Ishita Jain",
+      "email": "ishita.jain@example.com",
+      "phone": "9810098100"
+    },
+    {
+      "id": 19,
+      "name": "Varun Bhatt",
+      "email": "varun.bhatt@example.com",
+      "phone": "9745612389"
+    },
+    {
+      "id": 20,
+      "name": "Aisha Khan",
+      "email": "aisha.khan@example.com",
+      "phone": "9897894561"
+    }
+  ]
+}

@@ -1,26 +1,32 @@
+
 import { createSlice } from '@reduxjs/toolkit';
 
 const studentSlice = createSlice({
   name: 'students',
   initialState: [],
   reducers: {
-    setStudents: (state, action) => {
-      return action.payload; // Replace the entire student list
-    },
+    setStudents: (state, action) => action.payload,
     addStudent: (state, action) => {
-      state.push(action.payload); // Add new student
+      state.push(action.payload);
     },
-    editStudent: (state, action) => {
-      const index = state.findIndex(student => student.id === action.payload.id);
+    updateStudent: (state, action) => {
+      const index = state.findIndex(s => s.id === action.payload.id);
       if (index !== -1) {
-        state[index] = action.payload; // Replace existing student
+        state[index] = action.payload;
       }
     },
     deleteStudent: (state, action) => {
-      return state.filter(student => student.id !== action.payload);
-    },
-  },
+      return state.filter(s => s.id !== action.payload);
+    }
+  }
 });
 
-export const { setStudents, addStudent, editStudent, deleteStudent } = studentSlice.actions;
+// ✅ Make sure all reducers are exported here:
+export const {
+  setStudents,
+  addStudent,
+  updateStudent,  // <-- this line is very important
+  deleteStudent
+} = studentSlice.actions;
+
 export default studentSlice.reducer;

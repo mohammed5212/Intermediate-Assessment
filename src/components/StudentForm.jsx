@@ -1,69 +1,67 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { addStudent, editStudent } from '../redux/studentSlice';
+import { addStudent, updateStudent } from '../redux/studentSlice';
 
 const StudentForm = () => {
-  const { id } = useParams(); // if editing
+  const { id } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const students = useSelector(state => state.students);
 
-  const isEditing = !!id;
-  const existingStudent = isEditing
-    ? students.find(s => s.id === Number(id))
-    : null;
+  const isEditMode = Boolean(id);
+  const studentToEdit = students.find(s => s.id === parseInt(id));
 
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-  });
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
 
-  const [errors, setErrors] = useState({});
-
-  // Pre-fill form if editing
   useEffect(() => {
-    if (existingStudent) {
-      setFormData({
-        name: existingStudent.name || '',
-        email: existingStudent.email || '',
-        phone: existingStudent.phone || '',
-      });
+    if (isEditMode && studentToEdit) {
+      setName(studentToEdit.name);
+      setEmail(studentToEdit.email);
+      setPhone(studentToEdit.phone);
     }
-  }, [existingStudent]);
+  }, [id, studentToEdit, isEditMode]);
 
-  // Handle form changes
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  // Basic validation
-  const validate = () => {
-    const newErrors = {};
-    if (!formData.name.trim()) newErrors.name = 'Name is required';
-    if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Invalid email format';
-    }
-    if (!formData.phone.trim()) newErrors.phone = 'Phone is required';
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  // Submit handler
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!validate()) return;
 
-    if (isEditing) {
-      dispatch(editStudent({ id: Number(id), ...formData }));
+    if (!name || !email || !phone) {
+      alert('All fields are required');
+      return;
+    }
+
+    const studentData = {
+      name,
+      email,
+      phone
+    };
+
+    if (isEditMode) {
+      // 🔁 Send PUT to backend
+      const res = await fetch(`http://localhost:5000/students/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ ...studentData, id: parseInt(id) })
+      });
+
+      const updated = await res.json();
+
+      dispatch(updateStudent(updated)); // ✅ Update Redux
     } else {
-      const newStudent = {
-        id: Date.now(), // unique ID
-        ...formData,
-      };
+      // ➕ POST new student
+      const res = await fetch('http://localhost:5000/students', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(studentData)
+      });
+
+      const newStudent = await res.json();
       dispatch(addStudent(newStudent));
     }
 
@@ -71,49 +69,37 @@ const StudentForm = () => {
   };
 
   return (
-    <div style={{ padding: '1rem' }}>
-      <h2>{isEditing ? 'Edit Student' : 'Add Student'}</h2>
-
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Name:</label><br />
-          <input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-          />
-          {errors.name && <p style={{ color: 'red' }}>{errors.name}</p>}
-        </div>
-
-        <div>
-          <label>Email:</label><br />
-          <input
-            type="text"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-          />
-          {errors.email && <p style={{ color: 'red' }}>{errors.email}</p>}
-        </div>
-
-        <div>
-          <label>Phone:</label><br />
-          <input
-            type="text"
-            name="phone"
-            value={formData.phone}
-            onChange={handleChange}
-          />
-          {errors.phone && <p style={{ color: 'red' }}>{errors.phone}</p>}
-        </div>
-
-        <br />
-        <button type="submit">
-          {isEditing ? 'Update' : 'Add'} Student
-        </button>{' '}
-        <button type="button" onClick={() => navigate('/students')}>
-          Cancel
+    <div className="max-w-md mx-auto p-6 bg-white shadow rounded mt-8">
+      <h2 className="text-2xl font-bold mb-4">
+        {isEditMode ? 'Edit Student' : 'Add Student'}
+      </h2>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <input
+          type="text"
+          placeholder="Name"
+          className="w-full p-2 border rounded"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+        <input
+          type="email"
+          placeholder="Email"
+          className="w-full p-2 border rounded"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <input
+          type="tel"
+          placeholder="Phone"
+          className="w-full p-2 border rounded"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+        />
+        <button
+          type="submit"
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+        >
+          {isEditMode ? 'Update' : 'Add'} Student
         </button>
       </form>
     </div>
