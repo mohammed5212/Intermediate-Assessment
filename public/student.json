@@ -1,5 +1,5 @@
-{
-  "students": [
+
+ [
     {
       "id": 1,
       "name": "Rahul Sharma",
@@ -119,12 +119,5 @@
       "name": "Aisha Khan",
       "email": "aisha.khan@example.com",
       "phone": "9897894561"
-    },
-    {
-      "id": "2330",
-      "name": "mohammed",
-      "email": "mohammedchpktr@gmail.com",
-      "phone": "9123456780"
     }
   ]
-}

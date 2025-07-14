@@ -1,107 +1,100 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addStudent, updateStudent } from '../redux/studentSlice';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const StudentForm = () => {
-  const { id } = useParams();
-  const navigate = useNavigate();
   const dispatch = useDispatch();
-  const students = useSelector(state => state.students);
+  const navigate = useNavigate();
+  const { id } = useParams();
+  const students = useSelector((state) => state.students);
 
-  const isEditMode = Boolean(id);
-  const studentToEdit = students.find(s => s.id === parseInt(id));
+  const isEdit = !!id;
+  const existingStudent = isEdit ? students.find(s => s.id === parseInt(id)) : null;
 
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+  });
 
   useEffect(() => {
-    if (isEditMode && studentToEdit) {
-      setName(studentToEdit.name);
-      setEmail(studentToEdit.email);
-      setPhone(studentToEdit.phone);
+    if (existingStudent) {
+      setFormData(existingStudent);
     }
-  }, [id, studentToEdit, isEditMode]);
+  }, [existingStudent]);
 
-  const handleSubmit = async (e) => {
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!name || !email || !phone) {
-      alert('All fields are required');
-      return;
-    }
-
-    const studentData = {
-      name,
-      email,
-      phone
-    };
-
-    if (isEditMode) {
-      // 🔁 Send PUT to backend
-      const res = await fetch(`http://localhost:5000/students/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ ...studentData, id: parseInt(id) })
-      });
-
-      const updated = await res.json();
-
-      dispatch(updateStudent(updated)); // ✅ Update Redux
+    if (isEdit) {
+      dispatch(updateStudent({ ...formData, id: parseInt(id) }));
     } else {
-      // ➕ POST new student
-      const res = await fetch('http://localhost:5000/students', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(studentData)
-      });
-
-      const newStudent = await res.json();
-      dispatch(addStudent(newStudent));
+      const newId = students.length > 0 ? Math.max(...students.map(s => s.id)) + 1 : 1;
+      dispatch(addStudent({ ...formData, id: newId }));
     }
 
     navigate('/students');
   };
 
   return (
-    <div className="max-w-md mx-auto p-6 bg-white shadow rounded mt-8">
-      <h2 className="text-2xl font-bold mb-4">
-        {isEditMode ? 'Edit Student' : 'Add Student'}
-      </h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <input
-          type="text"
-          placeholder="Name"
-          className="w-full p-2 border rounded"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-        <input
-          type="email"
-          placeholder="Email"
-          className="w-full p-2 border rounded"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <input
-          type="tel"
-          placeholder="Phone"
-          className="w-full p-2 border rounded"
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-        />
-        <button
-          type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-        >
-          {isEditMode ? 'Update' : 'Add'} Student
-        </button>
-      </form>
+    <div className="container mt-5">
+      <div className="row justify-content-center">
+        <div className="col-md-8 col-lg-6">
+          <div className="card shadow">
+            <div className="card-body">
+              <h3 className="card-title mb-4 text-center">
+                {isEdit ? 'Edit Student' : 'Add New Student'}
+              </h3>
+              <form onSubmit={handleSubmit}>
+                <div className="mb-3">
+                  <label className="form-label">Name</label>
+                  <input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    required
+                    className="form-control"
+                  />
+                </div>
+                <div className="mb-3">
+                  <label className="form-label">Email</label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                    className="form-control"
+                  />
+                </div>
+                <div className="mb-3">
+                  <label className="form-label">Phone</label>
+                  <input
+                    type="text"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    required
+                    className="form-control"
+                  />
+                </div>
+                <button type="submit" className="btn btn-primary w-100">
+                  {isEdit ? 'Update Student' : 'Add Student'}
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
