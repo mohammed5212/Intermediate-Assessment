@@ -1,4 +1,3 @@
-import React from 'react';
 import { Routes, Route, Navigate, Link } from 'react-router-dom';
 import StudentList from './components/StudentList';
 import StudentDetail from './components/StudentDetail';
